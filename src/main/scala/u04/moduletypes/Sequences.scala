@@ -1,4 +1,4 @@
-package scala.u04.moduletypes
+package u04.moduletypes
 
 object Sequences:
   

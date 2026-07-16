@@ -1,12 +1,11 @@
-package scala.lab04
+package lab04
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Prop.forAll
 import org.scalacheck.{Arbitrary, Gen, Properties, Test}
 
-import scala.lab04.Sequences.*
-import scala.lab04.Sequences.Sequence.*
-
+import lab04.Sequences.*
+import lab04.Sequences.Sequence.*
 
 object SequenceCheck extends Properties("Sequence"):
 
@@ -56,5 +55,5 @@ object SequenceCheck extends Properties("Sequence"):
         case (Cons(h, t), f) => Cons(h, t).flatMap(f) == f(h).concat(t.flatMap(f))
 
   // how to check a generator works as expected
-  @main def showSequences() =
+  @main def showSequences(): Unit =
     Range(0,20).foreach(i => println(summon[Arbitrary[Sequence[Int]]].arbitrary.sample))

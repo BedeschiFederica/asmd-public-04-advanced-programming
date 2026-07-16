@@ -1,4 +1,4 @@
-package scala.u04.datastructures;
+package u04.datastructures;
 
 import java.util.function.UnaryOperator;
 

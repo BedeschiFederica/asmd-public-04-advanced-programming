@@ -1,4 +1,4 @@
-package scala.lab04
+package lab04
 
 object Sequences:
   

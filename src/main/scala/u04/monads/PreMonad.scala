@@ -1,4 +1,4 @@
-package u14.monad.pre
+package u04.monads
 
 object PreMonad:
 

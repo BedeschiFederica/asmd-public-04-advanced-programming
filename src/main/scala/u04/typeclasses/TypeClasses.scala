@@ -1,4 +1,4 @@
-package u04
+package u04.typeclasses
 
 object TypeClasses :
 

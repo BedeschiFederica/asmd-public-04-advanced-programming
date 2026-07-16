@@ -1,9 +1,9 @@
-package scala.lab04
+package lab04
 
 import org.scalacheck.Prop.{forAll, propBoolean}
 import org.scalacheck.{Arbitrary, Gen, Properties}
 
-import scala.lab04.SetADTs.{BasicSetADT, SetADT}
+import lab04.SetADTs.{BasicSetADT, SetADT}
 
 abstract class SetADTCheck(name: String) extends Properties(name):
   val setADT: SetADT

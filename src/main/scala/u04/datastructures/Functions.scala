@@ -1,4 +1,4 @@
-package scala.u04.datastructures
+package u04.datastructures
 
 // a module, including various functions and definitions
 object Functions extends App:

@@ -1,4 +1,4 @@
-package scala.lab04
+package lab04
 
 import u04.datastructures.Sequences.*
 import Sequence.*
