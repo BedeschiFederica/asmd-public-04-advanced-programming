@@ -68,25 +68,41 @@ abstract class SetADTCheck(name: String) extends Properties(name):
     forAll: (s: Set[Int], x: Int) =>
       s.remove(x).size() == (if s.contains(x) then s.size() - 1 else s.size())
 
+  /** common algebraic properties:
+   * - commutativity: operation(s1, s2) = operation(s2, s1)
+   * - associativity: operation(operation(s1, s2), s3) = operation(s1, operation(s2, s3))
+   * - idempotence: operation(s, s) = s
+   */
+
+  enum AlgebraicProperty:
+    case Commutativity
+    case Associativity
+    case Idempotence
+    
+  import AlgebraicProperty.*
+
+  private def checkAlgebraicProperty(algebraicProperty: AlgebraicProperty, operationName: String,
+                                     operation: (Set[Int], Set[Int]) => Set[Int]): Unit = algebraicProperty match
+    case Commutativity =>
+      property(s"commutativity of $operationName") =
+        forAll: (s1: Set[Int], s2: Set[Int]) =>
+          operation(s1, s2) === operation(s2, s1)
+    case Associativity =>
+      property(s"associativity of $operationName") =
+        forAll: (s1: Set[Int], s2: Set[Int], s3: Set[Int]) =>
+          operation(operation(s1, s2), s3) === operation(s1, operation(s2, s3))
+    case Idempotence =>
+      property(s"idempotence of $operationName") =
+        forAll: (s: Set[Int]) =>
+          operation(s, s) === s
+
   /** algebraic properties for union:
    * - commutativity: union(s1, s2) = union(s2, s1)
    * - associativity: union(union(s1, s2), s3) = union(s1, union(s2, s3))
    * - idempotence: union(s, s) = s
    * - the empty set is the identity element: union(s, empty) = s
    */
-
-  property("commutativity of union") =
-    forAll: (s1: Set[Int], s2: Set[Int]) =>
-      (s1 || s2) === (s2 || s1)
-
-  property("associativity of union") =
-    forAll: (s1: Set[Int], s2: Set[Int], s3: Set[Int]) =>
-      ((s1 || s2) || s3) === (s1 || (s2 || s3))
-
-  property("idempotence of union") =
-    forAll: (s: Set[Int]) =>
-      (s || s) === s
-
+  Seq(Commutativity, Associativity, Idempotence).foreach(checkAlgebraicProperty(_, "union", _ || _))
   property("the empty set is the identity element for union") =
     forAll: (s: Set[Int]) =>
       (s || empty()) === s
@@ -97,19 +113,7 @@ abstract class SetADTCheck(name: String) extends Properties(name):
    * - idempotence: intersection(s, s) = s
    * - the empty set is the absorbing element: intersection(s, empty) = empty
    */
-
-  property("commutativity of intersection") =
-    forAll: (s1: Set[Int], s2: Set[Int]) =>
-      (s1 && s2) === (s2 && s1)
-
-  property("associativity of intersection") =
-    forAll: (s1: Set[Int], s2: Set[Int], s3: Set[Int]) =>
-      ((s1 && s2) && s3) === (s1 && (s2 && s3))
-
-  property("idempotence of intersection") =
-    forAll: (s: Set[Int]) =>
-      (s && s) === s
-
+  Seq(Commutativity, Associativity, Idempotence).foreach(checkAlgebraicProperty(_, "intersection", _ && _))
   property("the empty set is the absorbing element for intersection") =
     forAll: (s: Set[Int]) =>
       (s && empty()) === empty()
