@@ -2,8 +2,7 @@ package lab04
 
 import org.scalacheck.Prop.{forAll, propBoolean}
 import org.scalacheck.{Arbitrary, Gen, Properties}
-
-import lab04.SetADTs.{BasicSetADT, SetADT}
+import lab04.SetADTs.{BasicSetADT, SetADT, TreeSetADT}
 
 abstract class SetADTCheck(name: String) extends Properties(name):
   val setADT: SetADT
@@ -78,7 +77,7 @@ abstract class SetADTCheck(name: String) extends Properties(name):
     case Commutativity
     case Associativity
     case Idempotence
-    
+
   import AlgebraicProperty.*
 
   private def checkAlgebraicProperty(algebraicProperty: AlgebraicProperty, operationName: String,
@@ -149,3 +148,7 @@ object BasicSetADTCheck extends SetADTCheck("SequenceBased Set"):
 
   @main def visualizingCheckArbitrarySets(): Unit =
     Range(0,20).foreach(i => println(summon[Arbitrary[setADT.Set[Int]]].arbitrary.sample))
+
+
+object TreeSetADTCheck extends SetADTCheck("TreeBased Set"):
+  val setADT: SetADT = TreeSetADT

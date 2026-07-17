@@ -1,10 +1,11 @@
 package lab04
 
-import u04.datastructures.Sequences.*
-import Sequence.*
+import Sequences.*
+
+import scala.annotation.tailrec
 
 object SetADTs:
-  
+
   trait SetADT:
     type Set[A]
     def empty[A](): Set[A]
@@ -18,10 +19,12 @@ object SetADTs:
       def remove(a: A): Set[A]
       def toSequence(): Sequence[A]
       def size(): Int
-      def ===(other: Set[A]): Boolean
-    
+      def ===(other: Set[A]): Boolean = s.union(other).size() == s.size()
+
 
   object BasicSetADT extends SetADT:
+
+    import Sequence.*
 
     opaque type Set[A] = Sequence[A]
 
@@ -33,8 +36,9 @@ object SetADTs:
         case Cons(h, t)  => Cons(h, t.add(element))
         case _ => Cons(element, Nil())
 
-      def remove(a: A): Set[A] = s.filter(_ != a)  
+      def remove(a: A): Set[A] = s.filter(_ != a)
 
+      @tailrec
       def contains(a: A): Boolean = s match
         case Cons(h, t) => h == a || t.contains(a)
         case Nil() => false
@@ -54,11 +58,37 @@ object SetADTs:
         case Cons(_, t) => 1 + t.size()
         case Nil() => 0
 
-      def ===(other: Set[A]): Boolean =
-        s.union(other).size() == s.size()
+
+  object TreeSetADT extends SetADT:
+
+    import lab04.BinaryTrees.BinaryTree
+    import BinaryTree.{Node, Nil}
+    export BinaryTree.{contains, remove, size}
+
+    opaque type Set[A] = BinaryTree[A]
+
+    def empty[A](): Set[A] = Nil()
+
+    extension [A](s: Set[A])
+      def add(element: A): Set[A] = if s.contains(element) then s else s.insert(element)
+
+      def toSequence(): Sequence[A] = s match
+        case Node(value, left, right) => left.toSequence() concat Sequence.of(1, value) concat right.toSequence()
+        case _ => Sequence.Nil()
+
+      def union(s2: Set[A]): Set[A] = s match
+        case Node(value, left, right) => left.union(right.union(s2.add(value)))
+        case _ =>  s2
+
+      def intersection(s2: Set[A]): Set[A] = s match
+        case Node(value, left, right) if s2.contains(value) =>
+          val s2WithoutValue = s2.remove(value)
+          Node(value, left.intersection(s2WithoutValue), right.intersection(s2WithoutValue))
+        case Node(_, left, right) => left.intersection(s2).union(right.intersection(s2))
+        case _ => Nil()
 
 
-@main def trySetADTModule =
+@main def tryBasicSetADT(): Unit =
   import SetADTs.*
   val setADT: SetADT = BasicSetADT
   import setADT.*

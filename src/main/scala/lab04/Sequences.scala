@@ -27,7 +27,7 @@ object Sequences:
         case Cons(_, t)            => t.filter(pred)
         case Nil()                 => Nil()
 
-      def concat(s2: Sequence[A]): Sequence[A] = s match
+      infix def concat(s2: Sequence[A]): Sequence[A] = s match
         case Cons(h, t) => Cons(h, t.concat(s2))
         case Nil()      => s2
 
@@ -35,7 +35,7 @@ object Sequences:
         case Cons(h, t) => mapper(h).concat(t.flatMap(mapper))
         case Nil()      => Nil()
 
-@main def trySequences() =
+@main def trySequences(): Unit =
   import Sequences.*
   import Sequence.*
   
